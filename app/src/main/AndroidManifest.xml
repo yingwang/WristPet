@@ -29,6 +29,7 @@
 
         <service
             android:name=".complication.PetComplicationService"
+            android:icon="@drawable/ic_complication"
             android:exported="true"
             android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
             <intent-filter>
@@ -40,12 +41,6 @@
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="300" />
-            <meta-data
-                android:name="android.support.wearable.complications.PROVIDER_CONFIG_ACTION"
-                android:value="" />
-            <meta-data
-                android:name="android.support.wearable.complications.SAFE_WATCH_FACES"
-                android:value="" />
         </service>
 
         <service

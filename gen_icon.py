@@ -52,10 +52,10 @@ sizes = {
 
 base = "app/src/main/res"
 for density, sz in sizes.items():
-    # Launcher icon: dark bg circle with pet
+    # Launcher icon: teal bg circle with pet
     launcher = Image.new("RGBA", (sz, sz), (0, 0, 0, 0))
     draw_bg = ImageDraw.Draw(launcher)
-    draw_bg.ellipse([0, 0, sz - 1, sz - 1], fill=(30, 30, 50))
+    draw_bg.ellipse([0, 0, sz - 1, sz - 1], fill=(38, 166, 154))
     pet = draw_pet_icon(sz)
     launcher = Image.alpha_composite(launcher, pet)
 
