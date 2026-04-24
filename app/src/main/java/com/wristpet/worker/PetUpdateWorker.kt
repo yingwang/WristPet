@@ -1,13 +1,16 @@
 package com.wristpet.worker
 
+import android.content.ComponentName
 import android.content.Context
 import androidx.wear.tiles.TileService
+import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.wristpet.complication.PetComplicationService
 import com.wristpet.data.health.StepCountReader
 import com.wristpet.data.repository.PetRepository
 import com.wristpet.engine.PetEngine
@@ -26,6 +29,10 @@ class PetUpdateWorker(
         PetRepository.update(updated)
         TileService.getUpdater(applicationContext)
             .requestUpdate(PetTileService::class.java)
+        ComplicationDataSourceUpdateRequester.create(
+            applicationContext,
+            ComponentName(applicationContext, PetComplicationService::class.java)
+        ).requestUpdateAll()
         return Result.success()
     }
 }
@@ -35,7 +42,7 @@ object PetUpdateScheduler {
 
     fun schedule(context: Context) {
         val request = PeriodicWorkRequestBuilder<PetUpdateWorker>(
-            30, TimeUnit.MINUTES
+            15, TimeUnit.MINUTES
         )
             .setConstraints(
                 Constraints.Builder()

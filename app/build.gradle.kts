@@ -96,6 +96,9 @@ dependencies {
     implementation("androidx.wear.tiles:tiles:1.3.0")
     implementation("androidx.wear.tiles:tiles-material:1.3.0")
 
+    // Complications
+    implementation("androidx.wear.watchface:watchface-complications-data-source-ktx:1.2.1")
+
     // Guava (required by Tiles API)
     implementation("com.google.guava:guava:33.0.0-android")
 
