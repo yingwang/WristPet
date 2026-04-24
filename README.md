@@ -1,29 +1,36 @@
 # WristPet
 
-A pixel-art virtual pet for Wear OS. Raise a tiny creature on your wrist — feed it with attention and steps.
+A pixel-art virtual pet for Wear OS. Raise a tiny creature on your wrist — keep it happy by staying active.
 
 ## Features
 
 **Pet States**
 - **Happy** — green, smiling, all is well
-- **Bored** — 2 hours without interaction, half-lidded eyes
-- **Angry** — 6 hours ignored, turns red
+- **Bored** — 2 hours of inactivity, half-lidded eyes
+- **Angry** — 6 hours of inactivity, turns red
 - **Sleeping** — 10 PM to 7 AM, recharges energy
 - **Sick** — health drops below 30
 
-**Interaction**
-- Tap the pet to boost happiness (+15) and energy (+5)
-- Walk to keep it happy — 6,000 daily steps = +20 happiness bonus
-- Stats decay over time: happiness fades, energy drains
+**Stay Active, Stay Happy**
+- Walking counts as interaction — your pet won't get bored or angry as long as you're moving
+- Every 100 steps gives a happiness boost
+- 6,000 daily steps = full step bonus (+20 happiness)
+- Tap the pet in the app for an extra boost (+15 happiness, +5 energy)
+- Stats decay over time without activity
 
-**Watch Face Integration**
-- **Complication**: Add to any watch face slot — shows pet state + happiness percentage, or a small pet image
-- **Tile**: Swipe from watch face to see pet image, mood, happiness bar, and step count. Tap to open the app
+**Watch Face Complication**
+- Add the pet directly to your watch face — it changes color and expression with its mood
+- Tap the complication to interact without opening the app
+- Updates automatically when you walk
+
+**Tile**
+- Swipe from watch face to see pet image, mood, happiness bar, and step count
+- Tap to open the full app
 
 **Background Updates**
-- Passive step tracking via Health Services — updates in near real-time
-- WorkManager job every 15 minutes to refresh pet state
-- Complication and tile auto-refresh when steps change
+- Passive step tracking via Health Services — near real-time updates
+- WorkManager job every 15 minutes as fallback
+- Complication and tile refresh when steps change
 
 ## Install
 
