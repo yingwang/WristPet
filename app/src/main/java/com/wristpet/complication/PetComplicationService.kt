@@ -5,7 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.Icon
 import androidx.wear.watchface.complications.data.ComplicationData
 import androidx.wear.watchface.complications.data.ComplicationType
-import androidx.wear.watchface.complications.data.MonochromaticImage
+import androidx.wear.watchface.complications.data.PhotoImageComplicationData
 import androidx.wear.watchface.complications.data.PlainComplicationText
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.data.SmallImage
@@ -36,6 +36,7 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
         return when (type) {
             ComplicationType.SHORT_TEXT -> buildShortText(pet, null)
             ComplicationType.SMALL_IMAGE -> buildSmallImage(pet, null)
+            ComplicationType.PHOTO_IMAGE -> buildPhotoImage(pet, null)
             else -> null
         }
     }
@@ -48,6 +49,7 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
         return when (request.complicationType) {
             ComplicationType.SHORT_TEXT -> buildShortText(pet, tap)
             ComplicationType.SMALL_IMAGE -> buildSmallImage(pet, tap)
+            ComplicationType.PHOTO_IMAGE -> buildPhotoImage(pet, tap)
             else -> null
         }
     }
@@ -66,9 +68,10 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
             contentDescription = PlainComplicationText.Builder("Pet status").build()
         )
             .setTitle(PlainComplicationText.Builder("${pet.happiness}%").build())
-            .setMonochromaticImage(
-                MonochromaticImage.Builder(
-                    Icon.createWithBitmap(petBitmap)
+            .setSmallImage(
+                SmallImage.Builder(
+                    image = Icon.createWithBitmap(petBitmap),
+                    type = SmallImageType.PHOTO
                 ).build()
             )
         tapAction?.let { builder.setTapAction(it) }
@@ -82,6 +85,16 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
                 image = Icon.createWithBitmap(bitmap),
                 type = SmallImageType.PHOTO
             ).build(),
+            contentDescription = PlainComplicationText.Builder("Pet").build()
+        )
+        tapAction?.let { builder.setTapAction(it) }
+        return builder.build()
+    }
+
+    private fun buildPhotoImage(pet: Pet, tapAction: PendingIntent?): ComplicationData {
+        val bitmap = PetBitmapRenderer.render(pet.state, 160)
+        val builder = PhotoImageComplicationData.Builder(
+            photoImage = Icon.createWithBitmap(bitmap),
             contentDescription = PlainComplicationText.Builder("Pet").build()
         )
         tapAction?.let { builder.setTapAction(it) }
