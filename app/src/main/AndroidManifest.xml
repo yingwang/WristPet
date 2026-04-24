@@ -27,6 +27,14 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".complication.PetInteractReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.wristpet.ACTION_INTERACT" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".complication.PetComplicationService"
             android:icon="@drawable/ic_complication"
@@ -37,7 +45,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.support.wearable.complications.SUPPORTED_TYPES"
-                android:value="SHORT_TEXT,SMALL_IMAGE,PHOTO_IMAGE" />
+                android:value="SMALL_IMAGE,PHOTO_IMAGE" />
             <meta-data
                 android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
                 android:value="300" />

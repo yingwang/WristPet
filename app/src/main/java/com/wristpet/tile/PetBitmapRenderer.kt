@@ -3,6 +3,8 @@ package com.wristpet.tile
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Typeface
+import com.wristpet.data.model.Pet
 import com.wristpet.data.model.PetState
 
 object PetBitmapRenderer {
@@ -105,6 +107,36 @@ object PetBitmapRenderer {
                 rect(B, cx + px, cy + 1.5f * px, px, px)
             }
         }
+
+        return bitmap
+    }
+
+    fun renderWithLabel(pet: Pet, sizePx: Int = 160): Bitmap {
+        val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        // Draw pet in upper portion
+        val petBitmap = render(pet.state, (sizePx * 0.75f).toInt())
+        val petX = (sizePx - petBitmap.width) / 2f
+        canvas.drawBitmap(petBitmap, petX, 0f, null)
+        petBitmap.recycle()
+
+        // Draw label at bottom
+        val label = when (pet.state) {
+            PetState.HAPPY -> "♥${pet.happiness}"
+            PetState.BORED -> "…${pet.happiness}"
+            PetState.ANGRY -> "!${pet.happiness}"
+            PetState.SLEEPING -> "Zzz"
+            PetState.SICK -> "×${pet.happiness}"
+        }
+        val textPaint = Paint().apply {
+            isAntiAlias = true
+            color = 0xFFFFFFFF.toInt()
+            textSize = sizePx / 6f
+            textAlign = Paint.Align.CENTER
+            typeface = Typeface.DEFAULT_BOLD
+        }
+        canvas.drawText(label, sizePx / 2f, sizePx - sizePx / 16f, textPaint)
 
         return bitmap
     }

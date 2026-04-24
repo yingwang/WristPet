@@ -14,7 +14,11 @@ object PetEngine {
 
     fun tick(pet: Pet, currentSteps: Int): Pet {
         val now = System.currentTimeMillis()
-        val hoursSinceInteraction = now - pet.lastInteractionEpochMs
+
+        // Walking counts as interaction — if steps increased, reset interaction timer
+        val stepsIncreased = currentSteps > pet.totalStepsToday
+        val lastInteraction = if (stepsIncreased) now else pet.lastInteractionEpochMs
+        val hoursSinceInteraction = now - lastInteraction
 
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         if (hour >= SLEEP_START_HOUR || hour < SLEEP_END_HOUR) {
@@ -23,6 +27,7 @@ object PetEngine {
                 state = PetState.SLEEPING,
                 energy = energy,
                 totalStepsToday = currentSteps,
+                lastInteractionEpochMs = lastInteraction,
                 lastUpdateEpochMs = now
             )
         }
@@ -32,8 +37,13 @@ object PetEngine {
         val energy = (pet.energy - elapsedMinutes / 15).coerceIn(0, 100)
         val health = pet.health
 
+        // Steps boost: proportional to progress, and extra bump when steps increase
         val stepProgress = (currentSteps.toFloat() / STEP_GOAL).coerceAtMost(1f)
         happiness = (happiness + (stepProgress * 20).toInt()).coerceAtMost(100)
+        if (stepsIncreased) {
+            val newSteps = currentSteps - pet.totalStepsToday
+            happiness = (happiness + (newSteps / 100).coerceAtMost(10)).coerceAtMost(100)
+        }
 
         val state = when {
             health < 30 -> PetState.SICK
@@ -48,6 +58,7 @@ object PetEngine {
             energy = energy,
             health = health,
             totalStepsToday = currentSteps,
+            lastInteractionEpochMs = lastInteraction,
             lastUpdateEpochMs = now
         )
     }

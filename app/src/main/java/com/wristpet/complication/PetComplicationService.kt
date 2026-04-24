@@ -17,15 +17,14 @@ import com.wristpet.data.model.Pet
 import com.wristpet.data.model.PetState
 import com.wristpet.data.repository.PetRepository
 import com.wristpet.tile.PetBitmapRenderer
-import com.wristpet.ui.WristPetActivity
 
 class PetComplicationService : SuspendingComplicationDataSourceService() {
 
     private fun launchIntent(): PendingIntent {
-        val intent = Intent(this, WristPetActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        val intent = Intent(PetInteractReceiver.ACTION_INTERACT).apply {
+            setClass(this@PetComplicationService, PetInteractReceiver::class.java)
         }
-        return PendingIntent.getActivity(
+        return PendingIntent.getBroadcast(
             this, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -56,18 +55,17 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
 
     private fun buildShortText(pet: Pet, tapAction: PendingIntent?): ComplicationData {
         val stateLabel = when (pet.state) {
-            PetState.HAPPY -> "Happy"
-            PetState.BORED -> "Bored"
-            PetState.ANGRY -> "Angry"
+            PetState.HAPPY -> "♥${pet.happiness}"
+            PetState.BORED -> "…${pet.happiness}"
+            PetState.ANGRY -> "!${pet.happiness}"
             PetState.SLEEPING -> "Zzz"
-            PetState.SICK -> "Sick"
+            PetState.SICK -> "×${pet.happiness}"
         }
         val petBitmap = PetBitmapRenderer.render(pet.state, 64)
         val builder = ShortTextComplicationData.Builder(
             text = PlainComplicationText.Builder(stateLabel).build(),
             contentDescription = PlainComplicationText.Builder("Pet status").build()
         )
-            .setTitle(PlainComplicationText.Builder("${pet.happiness}%").build())
             .setSmallImage(
                 SmallImage.Builder(
                     image = Icon.createWithBitmap(petBitmap),
@@ -79,7 +77,7 @@ class PetComplicationService : SuspendingComplicationDataSourceService() {
     }
 
     private fun buildSmallImage(pet: Pet, tapAction: PendingIntent?): ComplicationData {
-        val bitmap = PetBitmapRenderer.render(pet.state, 64)
+        val bitmap = PetBitmapRenderer.render(pet.state, 96)
         val builder = SmallImageComplicationData.Builder(
             smallImage = SmallImage.Builder(
                 image = Icon.createWithBitmap(bitmap),
